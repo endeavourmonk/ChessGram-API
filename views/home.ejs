@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        margin: 50px;
+      }
+
+      h2 {
+        color: #333;
+      }
+
+      .button-container {
+        display: flex;
+        justify-content: space-around;
+        margin-top: 20px;
+      }
+
+      .button-container a,
+      .button-container form {
+        text-decoration: none;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+        font-size: 16px;
+        transition: background-color 0.3s;
+      }
+
+      .button-container a {
+        background-color: #4caf50; /* Green */
+      }
+
+      .button-container form {
+        background-color: #f44336; /* Red */
+      }
+
+      .button-container a:hover,
+      .button-container form:hover {
+        background-color: #45a049; /* Darker green */
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Welcome to the Home Page</h2>
+    <div class="button-container">
+      <a href="/api/v1/auth/google">Google</a>
+      <a href="/api/v1/auth/login">Login</a>
+      <form action="/api/v1/auth/logout" method="post">
+        <button type="submit">Logout</button>
+      </form>
+    </div>
+  </body>
+</html>
