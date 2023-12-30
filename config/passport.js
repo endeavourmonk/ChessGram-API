@@ -2,6 +2,17 @@ const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const User = require('../models/users');
 
+passport.serializeUser((user, cb) => {
+  console.log('serializing user:', user.id);
+  process.nextTick(() => {
+    cb(null, { id: user.id, username: user.username, name: user.name });
+  });
+});
+
+passport.deserializeUser((user, cb) => {
+  process.nextTick(() => cb(null, user));
+});
+
 passport.use(
   new GoogleStrategy(
     {
@@ -10,19 +21,29 @@ passport.use(
       callbackURL: 'http://localhost:3000/api/v1/auth/google/callback',
     },
     async (accessToken, refreshToken, profile, cb) => {
-      //   User.findOrCreate({ googleId: profile.id }, (err, user) => cb(err, user));
-      console.log('fired callback fn, profile');
+      // If user already exist then serialize existing user
+      const existingUser = await User.findOne({ googleId: profile.id });
+      if (existingUser) return cb(null, existingUser);
 
-      const { name, email, picture, email_verified, locale } = profile._json;
+      // Else create new user and serialize
+      const { name, email, picture, sub, email_verified, locale } =
+        profile._json;
+
       const newUser = new User({
         name: name,
         email: email,
+        googleId: sub,
         username: email.split('@')[0],
         profilePicture: picture,
       });
-
-      await newUser.save();
-      return cb(null, profile);
+      // console.log(profile);
+      try {
+        await newUser.save();
+        return cb(null, newUser); // serializing new user
+      } catch (error) {
+        console.error(error);
+        return cb(error, null);
+      }
     },
   ),
 );
