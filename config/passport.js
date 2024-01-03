@@ -3,14 +3,23 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const User = require('../models/users');
 
 passport.serializeUser((user, cb) => {
-  console.log('serializing user:', user.id);
-  process.nextTick(() => {
-    cb(null, { id: user.id, username: user.username, name: user.name });
-  });
+  cb(null, { id: user.id, username: user.username, name: user.name });
 });
 
-passport.deserializeUser((user, cb) => {
-  process.nextTick(() => cb(null, user));
+passport.deserializeUser(async (serializedUser, cb) => {
+  // Use the serialized user's id to find the user in your database
+  try {
+    const user = await User.findById(serializedUser.id);
+
+    // If the user is found, pass it to the callback
+    if (user) {
+      return cb(null, user);
+    }
+    // If the user is not found, indicate deserialization failure
+    return cb(null, false, { message: 'User not found.' });
+  } catch (error) {
+    return cb(error);
+  }
 });
 
 passport.use(
@@ -18,7 +27,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: 'http://localhost:3000/api/v1/auth/google/callback',
+      callbackURL: 'http://localhost:3000/auth/google/callback',
     },
     async (accessToken, refreshToken, profile, cb) => {
       // If user already exist then serialize existing user
