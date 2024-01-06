@@ -4,6 +4,11 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="https://img.freepik.com/premium-vector/pawn-chess-icon_535345-3365.jpg"
+    />
     <title>Home</title>
     <style>
       body {
@@ -54,9 +59,45 @@
       <a href="/auth/google">Google</a>
       <a href="/auth/logout">Log out now</a>
       <a href="/users">all users</a>
-      <!-- <form action="/api/v1/auth/logout" method="post">
-        <button type="submit">Logout</button>
-      </form> -->
     </div>
+
+    <!-- Add the chat input and button -->
+    <div>
+      <input type="text" id="chatInput" placeholder="Type your message..." />
+      <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <ul id="chatMessages"></ul>
+
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script>
+      const socket = io();
+      socket.on('connection', () => {
+        console.log('a user connected');
+      });
+      socket.on('disconnect', () => {
+        console.log('user disconnected');
+      });
+
+      // Function to send a chat message
+      function sendMessage() {
+        const input = document.getElementById('chatInput');
+        const message = input.value;
+        if (message.trim() !== '') {
+          // Emit the 'chatMessage' event to the server
+          socket.emit('chatMessage', { message });
+          input.value = '';
+        }
+      }
+
+      // Listen for 'chatMessage' events from the server
+      socket.on('chatMessage', (data) => {
+        // Append the received message to the chatMessages list
+        const ul = document.getElementById('chatMessages');
+        const li = document.createElement('li');
+        li.appendChild(document.createTextNode(data.message));
+        ul.appendChild(li);
+      });
+    </script>
   </body>
 </html>

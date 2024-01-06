@@ -24,6 +24,8 @@ const handleJsonWebTokenError = () =>
   new AppError(401, 'Unauthorized, Please Login Again!');
 
 const sendErrorDev = (err, res) => {
+  // if (!err.statusCode) err.statusCode = 500;
+  console.log('error dev', err);
   res.status(err.statusCode).json({
     statusCode: err.statusCode,
     status: err.status,
@@ -42,7 +44,6 @@ const sendErrorProd = (err, res) => {
     });
   } else {
     // Programming or other error: don't send whole error, send generic message to client
-    console.error('ERROR: ', err);
     res.status(500).json({
       status: 'failed',
       message: 'Something went wrong',

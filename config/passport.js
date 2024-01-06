@@ -3,13 +3,15 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const User = require('../models/users');
 
 passport.serializeUser((user, cb) => {
-  cb(null, { id: user.id, username: user.username, name: user.name });
+  cb(null, { id: user.id });
 });
 
 passport.deserializeUser(async (serializedUser, cb) => {
   // Use the serialized user's id to find the user in your database
   try {
     const user = await User.findById(serializedUser.id);
+
+    // console.log('desearialized user -- ', user);
 
     // If the user is found, pass it to the callback
     if (user) {
