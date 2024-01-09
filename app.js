@@ -41,6 +41,7 @@ app.use(passport.session());
 // Parse incoming requests with JSON payloads.
 app.use(express.json({ limit: '10kb' }));
 
+// realtime socket connection
 io.on('connection', (socket) => {
   console.log('a user connected');
 
