@@ -43,7 +43,7 @@ app.use(express.json({ limit: '10kb' }));
 
 // realtime socket connection
 io.on('connection', (socket) => {
-  console.log('a user connected');
+  console.log('a user connected', socket);
 
   // Listen for 'chatMessage' events from the connected socket
   socket.on('chatMessage', (data) => {
