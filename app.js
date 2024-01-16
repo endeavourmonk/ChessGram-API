@@ -24,16 +24,30 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 // express session middleware
+// app.use(
+//   session({
+//     secret: process.env.SESSION_SECRET,
+//     resave: false,
+//     saveUninitialized: true,
+//     cookie: {
+//       secure: false,
+//       httpOnly: false,
+//       maxAge: 15 * 24 * 60 * 60 * 1000,
+//     },
+//   }),
+// );
+
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
     cookie: {
-      // secure: false,
-      secure: true,
-      httpOnly: false,
-      maxAge: 15 * 24 * 60 * 60 * 1000,
+      secure: true, // Enforce HTTPS
+      httpOnly: true, // Protect against client-side access
+      maxAge: 15 * 24 * 60 * 60 * 1000, // 15 days
+      domain: process.env.VERCEL_URL, // Set domain for Vercel
+      path: '/', // Match protected routes' path
     },
   }),
 );
