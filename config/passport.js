@@ -10,9 +10,6 @@ passport.deserializeUser(async (serializedUser, cb) => {
   // Use the serialized user's id to find the user in your database
   try {
     const user = await User.findById(serializedUser.id);
-
-    // console.log('desearialized user -- ', user);
-
     // If the user is found, pass it to the callback
     if (user) {
       return cb(null, user);
@@ -29,7 +26,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: 'http://localhost:3000/auth/google/callback',
+      callbackURL: '/auth/google/callback',
     },
     async (accessToken, refreshToken, profile, cb) => {
       // If user already exist then serialize existing user
