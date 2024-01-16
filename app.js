@@ -1,5 +1,6 @@
 const express = require('express');
 const passport = require('passport');
+const path = require('path');
 const { Server } = require('socket.io');
 const session = require('express-session');
 const { createServer } = require('node:http');
@@ -16,6 +17,8 @@ const passportSetup = require('./config/passport');
 const app = express();
 const server = createServer(app);
 const io = new Server(server);
+
+app.set('views', path.join(__dirname, 'views'));
 
 // set the view engine to ejs
 app.set('view engine', 'ejs');
@@ -37,7 +40,6 @@ app.use(
 // Initialize Passport and restore authentication state, if any, from the session.
 app.use(passport.initialize());
 app.use(passport.session());
-// app.use(passport.authenticate('session'));
 
 // Parse incoming requests with JSON payloads.
 app.use(express.json({ limit: '10kb' }));
