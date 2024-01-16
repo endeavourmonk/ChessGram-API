@@ -6,6 +6,7 @@ const { createServer } = require('node:http');
 
 const authRouter = require('./routes/auth');
 const userRouter = require('./routes/users');
+const roomRouter = require('./routes/room');
 const homeRouter = require('./routes/home');
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/error');
@@ -43,7 +44,7 @@ app.use(express.json({ limit: '10kb' }));
 
 // realtime socket connection
 io.on('connection', (socket) => {
-  console.log('a user connected', socket);
+  // console.log('a user connected', socket);
 
   // Listen for 'chatMessage' events from the connected socket
   socket.on('chatMessage', (data) => {
@@ -63,6 +64,7 @@ app.get('/', (req, res, next) => {
 });
 app.use('/users', userRouter);
 app.use('/auth', authRouter);
+app.use('/room', roomRouter);
 
 // if none of the above routes matched
 app.all('*', (req, res, next) => {

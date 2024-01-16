@@ -61,10 +61,16 @@
       <a href="/users">all users</a>
     </div>
 
+    <!-- Join Room -->
+    <div>
+      <input type="text" id="joinRoom" placeholder="Enter Room Id" />
+      <button onclick="joinRoom()">Join Room</button>
+    </div>
+
     <!-- Add the chat input and button -->
     <div>
       <input type="text" id="chatInput" placeholder="Type your message..." />
-      <button onclick="sendMessage()">Send</button>
+      <button onclick="sendMessage()">⏩</button>
     </div>
 
     <ul id="chatMessages"></ul>
@@ -98,6 +104,36 @@
         li.appendChild(document.createTextNode(data.message));
         ul.appendChild(li);
       });
+
+      // join Room
+      async function joinRoom() {
+        // Get the room ID from the input field
+        const roomId = document.getElementById('joinRoom').value;
+
+        try {
+          // Make a POST request to the /join endpoint
+          const response = await fetch('/room/joinroom', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ roomId }),
+          });
+
+          // Check if the request was successful (status code 200-299)
+          if (response.ok) {
+            // Handle the response if needed
+            const result = await response.json();
+            console.log(result);
+          } else {
+            // Handle errors or other status codes
+            console.error('Error joining room:', response.statusText);
+          }
+        } catch (error) {
+          // Handle network or other errors
+          console.error('Error joining room:', error.message);
+        }
+      }
     </script>
   </body>
 </html>
