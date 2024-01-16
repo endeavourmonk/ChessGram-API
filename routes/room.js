@@ -5,4 +5,6 @@ const { ensureAuthenticated } = require('../controllers/auth');
 const router = express.Router();
 
 router.post('/createroom', createRoom);
-router.get('/joinroom', joinRoom);
+router.post('/joinroom', joinRoom);
+
+module.exports = router;
