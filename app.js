@@ -43,10 +43,10 @@ app.use(
     resave: false,
     saveUninitialized: true,
     cookie: {
-      secure: true, // Enforce HTTPS
+      secure: false, // Enforce HTTPS
       httpOnly: true, // Protect against client-side access
       maxAge: 15 * 24 * 60 * 60 * 1000, // 15 days
-      domain: 'https://chessgram-api.onrender.com/', // Set domain for Vercel
+      domain: 'https://chessgram-api.onrender.com/',
       path: '/', // Match protected routes' path
     },
   }),
