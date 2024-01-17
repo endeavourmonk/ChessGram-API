@@ -43,7 +43,7 @@ app.use(
     resave: false,
     saveUninitialized: true,
     cookie: {
-      secure: false, // Enforce HTTPS
+      secure: true, // Enforce HTTPS
       httpOnly: true, // Protect against client-side access
       maxAge: 15 * 24 * 60 * 60 * 1000, // 15 days
       domain: 'https://chessgram-api.onrender.com/',
