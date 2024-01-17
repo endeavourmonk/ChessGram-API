@@ -48,6 +48,7 @@ app.use(
       maxAge: 15 * 24 * 60 * 60 * 1000, // 15 days
       domain: 'chessgram-api.onrender.com',
       path: '/', // Match protected routes' path
+      sameSite: 'none', // Allow cross-origin requests
     },
   }),
 );
