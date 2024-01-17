@@ -45,9 +45,9 @@ app.use(
     cookie: {
       secure: true, // Enforce HTTPS
       httpOnly: true, // Protect against client-side access
-      maxAge: 15 * 24 * 60 * 60 * 1000, // 15 days
+      // maxAge: 15 * 24 * 60 * 60 * 1000, // 15 days
       domain: 'chessgram-api.onrender.com',
-      path: '/', // Match protected routes' path
+      // path: '/',
       sameSite: 'none', // Allow cross-origin requests
     },
   }),
