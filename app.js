@@ -46,7 +46,7 @@ app.use(
       secure: true, // Enforce HTTPS
       httpOnly: true, // Protect against client-side access
       maxAge: 15 * 24 * 60 * 60 * 1000, // 15 days
-      domain: process.env.VERCEL_URL, // Set domain for Vercel
+      domain: 'https://chessgram-api.onrender.com/', // Set domain for Vercel
       path: '/', // Match protected routes' path
     },
   }),
