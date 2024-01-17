@@ -1,5 +1,5 @@
 exports.ensureAuthenticated = (req, res, next) => {
-  console.log('ensure authenticated: ', req.cookies);
+  console.log('ensure authenticated: ', req.session);
   if (req.isAuthenticated()) {
     console.log('authenticated');
     return next();
