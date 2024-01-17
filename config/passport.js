@@ -28,8 +28,8 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      // callbackURL: 'https://chessgram-api.onrender.com/auth/google/callback',
-      callbackURL: '/auth/google/callback',
+      callbackURL: 'https://chessgram-api.onrender.com/auth/google/callback',
+      // callbackURL: '/auth/google/callback',
     },
     async (accessToken, refreshToken, profile, cb) => {
       // If user already exist then serialize existing user
