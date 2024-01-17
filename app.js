@@ -43,12 +43,12 @@ app.use(
     resave: false,
     saveUninitialized: true,
     cookie: {
-      secure: true, // Enforce HTTPS
+      secure: false, // Enforce HTTPS
       httpOnly: true, // Protect against client-side access
       // maxAge: 15 * 24 * 60 * 60 * 1000, // 15 days
-      domain: 'chessgram-api.onrender.com',
+      // domain: 'chessgram-api.onrender.com',
       // path: '/',
-      sameSite: 'none', // Allow cross-origin requests
+      sameSite: 'strict', // Allow cross-origin requests
     },
   }),
 );
