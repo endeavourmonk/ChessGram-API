@@ -3,7 +3,7 @@ const passport = require('passport');
 const path = require('path');
 const { Server } = require('socket.io');
 const session = require('express-session');
-const { createServer } = require('node:https');
+const { createServer } = require('node:http');
 
 const authRouter = require('./routes/auth');
 const userRouter = require('./routes/users');
