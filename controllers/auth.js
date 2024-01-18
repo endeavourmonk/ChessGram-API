@@ -1,3 +1,5 @@
+const AppError = require('../utils/appError');
+
 exports.ensureAuthenticated = (req, res, next) => {
   console.log('ensure authenticated: ', req.session);
   if (req.isAuthenticated()) {
@@ -15,7 +17,7 @@ exports.restrictToRoles =
   (req, res, next) => {
     const hasPermission = roles.includes(req.user.role);
     if (hasPermission) next();
-    else next('not have permission');
+    else next(new AppError(400, `you don't have permission`));
   };
 
 exports.logout = (req, res, next) => {
