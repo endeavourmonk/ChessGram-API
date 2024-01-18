@@ -61,6 +61,12 @@
       <a href="/users">all users</a>
     </div>
 
+    <!-- create room -->
+    <div>
+      <input type="text" id="joinRoom" placeholder="Enter Room Id" />
+      <button onclick="CreateRoom()">Create Room</button>
+    </div>
+
     <!-- Join Room -->
     <div>
       <input type="text" id="joinRoom" placeholder="Enter Room Id" />
@@ -70,7 +76,7 @@
     <!-- Add the chat input and button -->
     <div>
       <input type="text" id="chatInput" placeholder="Type your message..." />
-      <button onclick="sendMessage()">⏩</button>
+      <button onclick="sendMessage()">Send Message</button>
     </div>
 
     <ul id="chatMessages"></ul>

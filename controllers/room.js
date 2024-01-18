@@ -1,8 +1,8 @@
 const AppError = require('../utils/appError');
 
 exports.createRoom = (req, res, next) => {
-  const { room } = req.body;
-  if (!room) next(new AppError(400, 'Please provide room details.'));
+  const { roomId } = req.body;
+  if (!roomId) next(new AppError(400, 'Please provide room details.'));
   next();
 };
 

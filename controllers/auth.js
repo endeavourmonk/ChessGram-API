@@ -8,7 +8,7 @@ exports.ensureAuthenticated = (req, res, next) => {
     // eslint-disable-next-line no-else-return
   } else {
     console.log('not authenticated');
-    res.redirect('/auth/google');
+    next(new AppError(401, `Unauthorized - Authentication required.`));
   }
 };
 
@@ -17,7 +17,13 @@ exports.restrictToRoles =
   (req, res, next) => {
     const hasPermission = roles.includes(req.user.role);
     if (hasPermission) next();
-    else next(new AppError(400, `you don't have permission`));
+    else
+      next(
+        new AppError(
+          403,
+          `Forbidden - You do not have permission to access this resource.`,
+        ),
+      );
   };
 
 exports.logout = (req, res, next) => {
