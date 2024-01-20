@@ -63,13 +63,13 @@
 
     <!-- create room -->
     <div>
-      <input type="text" id="joinRoom" placeholder="Enter Room Id" />
+      <input type="text" id="create-room" placeholder="Enter Room Id" />
       <button onclick="CreateRoom()">Create Room</button>
     </div>
 
     <!-- Join Room -->
     <div>
-      <input type="text" id="joinRoom" placeholder="Enter Room Id" />
+      <input type="text" id="join-room" placeholder="Enter Room Id" />
       <button onclick="joinRoom()">Join Room</button>
     </div>
 
@@ -91,13 +91,17 @@
         console.log('user disconnected');
       });
 
+      let roomId;
       // Function to send a chat message
       function sendMessage() {
         const input = document.getElementById('chatInput');
         const message = input.value;
         if (message.trim() !== '') {
-          // Emit the 'chatMessage' event to the server
-          socket.emit('chatMessage', { message });
+          // Send a message within the joined room
+          socket.emit('chatMessage', {
+            roomId: roomId,
+            message: message,
+          });
           input.value = '';
         }
       }
@@ -111,34 +115,12 @@
         ul.appendChild(li);
       });
 
-      // join Room
-      async function joinRoom() {
+      function joinRoom() {
         // Get the room ID from the input field
-        const roomId = document.getElementById('joinRoom').value;
-
-        try {
-          // Make a POST request to the /join endpoint
-          const response = await fetch('/room/joinroom', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ roomId }),
-          });
-
-          // Check if the request was successful (status code 200-299)
-          if (response.ok) {
-            // Handle the response if needed
-            const result = await response.json();
-            console.log(result);
-          } else {
-            // Handle errors or other status codes
-            console.error('Error joining room:', response.statusText);
-          }
-        } catch (error) {
-          // Handle network or other errors
-          console.error('Error joining room:', error.message);
-        }
+        roomId = document.getElementById('join-room').value;
+        console.log('Room Id', roomId);
+        // Join a room
+        socket.emit('joinRoom', roomId);
       }
     </script>
   </body>
