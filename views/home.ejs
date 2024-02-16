@@ -106,12 +106,35 @@
         }
       }
 
-      // Listen for 'chatMessage' events from the server
-      socket.on('chatMessage', (data) => {
+      // Listen for 'chatMessage' events from the server and display data on frontend
+      socket.on('chatMessage', async (data) => {
         // Append the received message to the chatMessages list
         const ul = document.getElementById('chatMessages');
         const li = document.createElement('li');
-        li.appendChild(document.createTextNode(data.message));
+
+        const chessUsername = data.message;
+        const userProfile = await fetch(
+          `https://api.chess.com/pub/player/${chessUsername}/stats`,
+        ).then((data) => data.json());
+
+        console.log(userProfile);
+        if (userProfile.code === 0) {
+          console.log(`${chessUsername} don't exist`);
+        } else {
+          function createListItems(data) {
+            for (const category in data) {
+              if (data.hasOwnProperty(category) && data[category].last) {
+                const lastRating = data[category].last.rating;
+                const listItem = document.createElement('li');
+                listItem.textContent = `${category}: ${lastRating}`;
+                li.appendChild(listItem);
+              }
+            }
+          }
+        }
+
+        createListItems(userProfile);
+        li.appendChild(document.createTextNode(userProfile));
         ul.appendChild(li);
       });
 
