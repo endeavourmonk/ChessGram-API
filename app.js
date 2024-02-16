@@ -9,7 +9,8 @@ const { createServer } = require('node:http');
 
 const authRouter = require('./routes/auth');
 const userRouter = require('./routes/users');
-const roomRouter = require('./routes/room');
+const waitlistRouter = require('./routes/waitlist');
+const chessRouter = require('./routes/chess');
 // const homeRouter = require('./routes/home');
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/error');
@@ -18,10 +19,9 @@ const passportSetup = require('./config/passport');
 
 const app = express();
 const server = createServer(app);
-const io = new Server(server);
 
 // securing req headers
-app.use(helmet());
+// app.use(helmet());
 
 app.set('views', path.join(__dirname, 'views'));
 
@@ -61,7 +61,22 @@ app.use(
   }),
 );
 
+// app.get('/', homeRouter);
+app.get('/', (req, res, next) => {
+  res.render('home');
+});
+app.use('/users', userRouter);
+app.use('/auth', authRouter);
+app.use('/chess', chessRouter);
+app.use('/waitlist', waitlistRouter);
+
+// if none of the above routes matched
+app.all('*', (req, res, next) => {
+  next(new AppError(404, `${req.originalUrl} not found`));
+});
+
 // realtime socket connection
+const io = new Server(server);
 io.on('connection', (socket) => {
   // console.log('a user connected', socket);
   // Listen for 'joinRoom' events from the connected socket
@@ -73,7 +88,7 @@ io.on('connection', (socket) => {
   // Listen for 'chatMessage' events from the connected socket within a specific room
   socket.on('chatMessage', (data) => {
     // Broadcast the received message to all sockets in the same room, including the sender
-    io.to(data.room).emit('chatMessage', data);
+    io.to(data.roomId).emit('chatMessage', data);
   });
 
   // Handle socket disconnection
@@ -82,24 +97,7 @@ io.on('connection', (socket) => {
   });
 });
 
-// app.get('/', homeRouter);
-app.get('/', (req, res, next) => {
-  res.render('home');
-});
-app.use('/users', userRouter);
-app.use('/auth', authRouter);
-app.use('/room', roomRouter);
-
-// if none of the above routes matched
-app.all('*', (req, res, next) => {
-  next(new AppError(404, `${req.originalUrl} not found`));
-});
-
 // Global error Handling
 app.use(globalErrorHandler);
 
-server.listen(3000, () => {
-  console.log(`💻 App running on 3000 🏃`);
-});
-
-module.exports = app;
+module.exports = server;
