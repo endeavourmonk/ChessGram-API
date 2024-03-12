@@ -61,16 +61,22 @@
       <a href="/users">all users</a>
     </div>
 
+    <!-- create room -->
+    <div>
+      <input type="text" id="create-room" placeholder="Enter Room Id" />
+      <button onclick="CreateRoom()">Create Room</button>
+    </div>
+
     <!-- Join Room -->
     <div>
-      <input type="text" id="joinRoom" placeholder="Enter Room Id" />
+      <input type="text" id="join-room" placeholder="Enter Room Id" />
       <button onclick="joinRoom()">Join Room</button>
     </div>
 
     <!-- Add the chat input and button -->
     <div>
       <input type="text" id="chatInput" placeholder="Type your message..." />
-      <button onclick="sendMessage()">⏩</button>
+      <button onclick="sendMessage()">Send Message</button>
     </div>
 
     <ul id="chatMessages"></ul>
@@ -85,54 +91,59 @@
         console.log('user disconnected');
       });
 
+      let roomId;
       // Function to send a chat message
       function sendMessage() {
         const input = document.getElementById('chatInput');
         const message = input.value;
         if (message.trim() !== '') {
-          // Emit the 'chatMessage' event to the server
-          socket.emit('chatMessage', { message });
+          // Send a message within the joined room
+          socket.emit('chatMessage', {
+            roomId: roomId,
+            message: message,
+          });
           input.value = '';
         }
       }
 
-      // Listen for 'chatMessage' events from the server
-      socket.on('chatMessage', (data) => {
+      // Listen for 'chatMessage' events from the server and display data on frontend
+      socket.on('chatMessage', async (data) => {
         // Append the received message to the chatMessages list
         const ul = document.getElementById('chatMessages');
         const li = document.createElement('li');
-        li.appendChild(document.createTextNode(data.message));
+
+        const chessUsername = data.message;
+        const userProfile = await fetch(
+          `https://api.chess.com/pub/player/${chessUsername}/stats`,
+        ).then((data) => data.json());
+
+        console.log(userProfile);
+        if (userProfile.code === 0) {
+          console.log(`${chessUsername} don't exist`);
+        } else {
+          function createListItems(data) {
+            for (const category in data) {
+              if (data.hasOwnProperty(category) && data[category].last) {
+                const lastRating = data[category].last.rating;
+                const listItem = document.createElement('li');
+                listItem.textContent = `${category}: ${lastRating}`;
+                li.appendChild(listItem);
+              }
+            }
+          }
+        }
+
+        createListItems(userProfile);
+        li.appendChild(document.createTextNode(userProfile));
         ul.appendChild(li);
       });
 
-      // join Room
-      async function joinRoom() {
+      function joinRoom() {
         // Get the room ID from the input field
-        const roomId = document.getElementById('joinRoom').value;
-
-        try {
-          // Make a POST request to the /join endpoint
-          const response = await fetch('/room/joinroom', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ roomId }),
-          });
-
-          // Check if the request was successful (status code 200-299)
-          if (response.ok) {
-            // Handle the response if needed
-            const result = await response.json();
-            console.log(result);
-          } else {
-            // Handle errors or other status codes
-            console.error('Error joining room:', response.statusText);
-          }
-        } catch (error) {
-          // Handle network or other errors
-          console.error('Error joining room:', error.message);
-        }
+        roomId = document.getElementById('join-room').value;
+        console.log('Room Id', roomId);
+        // Join a room
+        socket.emit('joinRoom', roomId);
       }
     </script>
   </body>

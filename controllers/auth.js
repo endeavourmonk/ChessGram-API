@@ -1,11 +1,14 @@
+const AppError = require('../utils/appError');
+
 exports.ensureAuthenticated = (req, res, next) => {
+  console.log('ensure authenticated: ', req.session);
   if (req.isAuthenticated()) {
     console.log('authenticated');
     return next();
     // eslint-disable-next-line no-else-return
   } else {
     console.log('not authenticated');
-    res.redirect('/auth/google');
+    next(new AppError(401, `Unauthorized - Authentication required.`));
   }
 };
 
@@ -14,7 +17,13 @@ exports.restrictToRoles =
   (req, res, next) => {
     const hasPermission = roles.includes(req.user.role);
     if (hasPermission) next();
-    else next('not have permission');
+    else
+      next(
+        new AppError(
+          403,
+          `Forbidden - You do not have permission to access this resource.`,
+        ),
+      );
   };
 
 exports.logout = (req, res, next) => {

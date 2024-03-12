@@ -6,11 +6,12 @@ const {
   updateUser,
   deactivateUser,
 } = require('../controllers/users');
-const { ensureAuthenticated } = require('../controllers/auth');
+const { ensureAuthenticated, restrictToRoles } = require('../controllers/auth');
 
 const router = express.Router();
 
-router.get('/', ensureAuthenticated, getAllUsers);
+router.get('/', ensureAuthenticated, restrictToRoles('admin'), getAllUsers);
+// router.get('/', getAllUsers);
 router
   .route('/:username')
   .get(getUser)
